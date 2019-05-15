@@ -25,9 +25,12 @@ fn main() {
        .last(true))
     .get_matches();
 
-  let from = matches.value_of("FROM").unwrap();
-  let to = matches.value_of("TO").unwrap();
-  let values = matches.values_of("VALUES").map(|vals| vals.collect::<Vec<_>>()).unwrap();
+  let from = first_lowercase_character(matches.value_of("FROM"), '_');
+  let to = first_lowercase_character(matches.value_of("TO"), '_');
+  let values = match  matches.values_of("VALUES").map(|vals| vals.collect::<Vec<_>>()) {
+    Some(v) => v,
+    None => Vec::new(),
+  };
   for value in values.iter() {
     let input = match value.trim().parse() {
       Ok(value) => value,
@@ -35,24 +38,35 @@ fn main() {
     };
     let from = t_to_c(from, input);
     let to = c_to_t(to, from);
-    println!("{}", to);
+    print!("{} ", to);
+  }
+  println!("");
+}
+
+fn first_lowercase_character(input: Option<&str>, default: char) -> char {
+  match input {
+    Some(s) => match s.to_lowercase().chars().next() {
+      Some(c) => c,
+      None => default,
+    },
+    None => default,
   }
 }
 
-fn t_to_c(t_type: &str, t: f64) -> f64 {
+fn t_to_c(t_type: char, t: f64) -> f64 {
   match t_type {
-    "f" => (t - 32.0) * 5.0 / 9.0,
-    "k" => t - 273.15,
-    "c" => t,
+    'f' => (t - 32.0) * 5.0 / 9.0,
+    'k' => t - 273.15,
+    'c' => t,
     _ => std::f64::NAN,
   }
 }
 
-fn c_to_t(t_type: &str, t: f64) -> f64 {
+fn c_to_t(t_type: char, t: f64) -> f64 {
   match t_type {
-    "f" => t *  9.0 / 5.0 + 32.0,
-    "k" => t + 273.15,
-    "c" => t,
+    'f' => t *  9.0 / 5.0 + 32.0,
+    'k' => t + 273.15,
+    'c' => t,
     _ => std::f64::NAN,
   }
 }
