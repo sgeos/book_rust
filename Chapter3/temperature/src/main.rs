@@ -26,6 +26,10 @@ fn main() {
        .short("t")
        .long("to")
        .default_value("c"))
+    .arg(Arg::with_name("ROUND")
+       .help("Round output flag")
+       .short("r")
+       .long("round"))
     .arg(Arg::with_name("VERBOSE")
        .help("Verbose output flag")
        .short("v")
@@ -35,10 +39,11 @@ fn main() {
        .last(true))
     .get_matches();
 
-  let verbose = matches.occurrences_of("VERBOSE");
   let from = get_format(matches.value_of("FROM"));
   let to = get_format(matches.value_of("TO"));
   let values = matches.values_of("VALUES").map(|vals| vals.collect::<Vec<_>>()).unwrap_or(Vec::new());
+  let round = matches.occurrences_of("ROUND");
+  let verbose = matches.occurrences_of("VERBOSE");
   if 0 < verbose {
     println!("Convering {} temperature values from {} to {}.", values.len(), from, to);
   };
@@ -49,7 +54,11 @@ fn main() {
     };
     let from = t_to_c(from, input);
     let to = c_to_t(to, from);
-    print!("{} ", to);
+    if 0 < round {
+      print!("{:.3} ", to);
+    } else {
+      print!("{} ", to);
+    };
   }
   println!("");
 }
