@@ -1,0 +1,7 @@
+[package]
+name = "xmas_carol"
+version = "1.0.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+
+[dependencies]
+
