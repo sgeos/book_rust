@@ -32,7 +32,15 @@ fn fibonacci(n: i64) -> i64 {
     match n {
       0 => 0,
       1 => 1,
-      n => fibonacci(n - 1) + fibonacci(n - 2),
+      n => {
+        let mut previous = 0;
+        let mut current = 1;
+        for _ in 2..n+1 {
+          current += previous;
+          previous = current - previous;
+        }
+        current
+      },
     }
   }
 }
