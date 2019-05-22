@@ -13,7 +13,7 @@ static FORMAT_LIST: &'static [&str] = &[CELSIUS, KELVIN, FAHRENHEIT];
 
 fn main() {
   let matches = App::new("Temperature Converter")
-    .version("1.0")
+    .version("1.0.0")
     .author("Brendan A. R. Sechter <sgeos [at] hotmail [dot] com>")
     .about("Converts temperatures.")
     .arg(Arg::with_name("FROM")
