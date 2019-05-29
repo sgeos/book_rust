@@ -1,5 +1,5 @@
 // Usage example:
-// cargo run -- -- 1 3 12 2 6 4 -1 -2 4 5.3 12 9 8 6
+// cargo run -- -- 1 3 12 2 6 4 -1 -2 4 5.3 NaN 12 9 8 6
 
 extern crate clap;
 use clap::{Arg, App};
@@ -16,21 +16,33 @@ fn main() {
        .last(true))
     .get_matches();
 
-  let command_line_value_list = matches.values_of("VALUES").map(|vals| vals.collect::<Vec<_>>()).unwrap_or(Vec::new());
+  let command_line_value_list = matches
+    .values_of("VALUES")
+    .map(|vals| vals.collect::<Vec<_>>())
+    .unwrap_or(Vec::new());
   let mut value_list: Vec<f64> = Vec::new();
   for value in command_line_value_list.iter() {
     match value.trim().parse::<f64>() {
-      Ok(value) => if !value.is_nan() { value_list.push(value) },
+      Ok(value) => value_list.push(value),
       Err(_) => (),
     }
   }
-  value_list.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Equal));
+  println!("Input:  {}", printable_list(&value_list));
+  sort_and_filter_f64_list(&mut value_list);
   println!("Values: {}", printable_list(&value_list));
   println!("Sum:    {}", value_list.iter().fold(0.0f64, |sum, value| sum + value));
   println!("Count:  {}", value_list.len());
   println!("Mean:   {}", mean(&value_list));
   println!("Median: {}", median(&value_list));
   println!("Mode:   {}", printable_list(&mode(&value_list)));
+}
+
+fn sort_and_filter_f64_list(value_list: &mut Vec<f64>) {
+  *value_list = value_list
+    .iter()
+    .filter_map(|v| if v.is_nan() { None } else { Some(*v) } )
+    .collect();
+  value_list.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Equal));
 }
 
 fn printable_list(value_list: &Vec<f64>) -> String {
@@ -80,7 +92,7 @@ fn mode(value_list: &Vec<f64>) -> Vec<f64> {
         result.push(value);
       }
     }
-    result.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Equal));
+    sort_and_filter_f64_list(&mut result);
     result
   }
 }
