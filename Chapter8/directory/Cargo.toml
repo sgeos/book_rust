@@ -1,0 +1,8 @@
+[package]
+name = "directory"
+version = "0.1.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+
+[dependencies]
+clap = "2.33.0"
+
