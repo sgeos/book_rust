@@ -16,7 +16,14 @@ impl Config {
       3 | _ => {
         let query = args[1].clone();
         let filename = args[2].clone();
-        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+        let mut case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+        for arg in args.iter().skip(3) {
+          case_sensitive = match arg.as_ref() {
+            "-c" | "--case-sensitive" => true,
+            "-i" | "--case-insensitive" => false,
+            _ => case_sensitive,
+          };
+        }
         Ok( Config { query, filename, case_sensitive } )
       },
     }
