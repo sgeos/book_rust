@@ -106,10 +106,10 @@ fn save(filename: &str, directory: &HashMap<String, Vec<String>>) {
   department_list.sort();
   for department in &department_list {
     for employee in directory.get::<String>(department).unwrap_or(&vec![]) {
-      data.push(format!("{}\t{}", department, employee));
+      data.push(format!("{}\x1F{}", department, employee));
     }
   }
-  let data = data.join("\n");
+  let data = data.join("\x1E");
   match fs::write(filename, data) {
     Ok(_) => (),
     Err(error) => println!("Error writing to file \"{}\": {:?}", filename, error),
@@ -125,8 +125,8 @@ fn load(filename: &str) -> HashMap<String, Vec<String>> {
     },
   };
   let mut directory = HashMap::new();
-  for line in data.split("\n").collect::<Vec<_>>() {
-    let data = line.split("\t").collect::<Vec<_>>();
+  for line in data.split("\x1E").collect::<Vec<_>>() {
+    let data = line.split("\x1F").collect::<Vec<_>>();
     match data.len() {
       0 | 1 => continue,
       2 => {
