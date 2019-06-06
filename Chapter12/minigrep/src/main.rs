@@ -1,21 +1,27 @@
-use std::{env, fs};
+extern crate minigrep;
 
-fn main() {
-  let args: Vec<String> = env::args().collect();
+use minigrep::Config;
+use std::env;
+use std::error::Error;
+use std::process;
 
-  if 2 < args.len() {
-    let query = &args[1];
-    let filename = &args[2];
-    println!("Searching for \"{}\" in file \"{}\".", query, filename);
-    let contents = fs::read_to_string(filename)
-      .expect("Something went wrong reading the file");
-      // TODO: Properly handle error case when attempting to open file.
-    println!("With text:\n{}", contents);
-  } else if 0 < args.len() {
-    let executable = &args[0];
-    println!("Usage: {} pattern filename", executable);
-  } else {
-    println!("Usage: minigrep pattern filename");
+fn main() -> Result<(), Box<dyn Error>> {
+  let args: Vec<String> = env::args().collect::<Vec<_>>();
+  //let args: Vec<String> = Vec::new();
+  let config = Config::new(&args).unwrap_or_else(|error| {
+    println!("Application Error: {}", error);
+    let executable = match args.len() {
+      0 => "minigrep",
+      1 | _ => args[0].as_str(),
+    };
+    println!("Usage: {} PATTERN FILENAME", executable);
+    process::exit(1);
+  });;
+  println!("Searching for \"{}\" in file \"{}\".", config.query, config.filename);
+  if let Err(error) = minigrep::run(config) {
+    println!("Application Error: {}", error);
+    process::exit(1);
   }
+  Ok(())
 }
 
