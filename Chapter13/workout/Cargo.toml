@@ -1,0 +1,8 @@
+[package]
+name = "workout"
+version = "1.0.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+
+[dependencies]
+rand = "0.4.6"
+
