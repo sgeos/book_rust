@@ -5,28 +5,32 @@ use std::error::Error;
 use std::thread;
 use std::time::Duration;
 
-struct Cacher<T>
-    where T: Fn(u32) -> u32
+struct Cacher<T, V>
+  where
+    T: Fn() -> V,
+    V: Copy
 {
   calculation: T,
-  value: Option<u32>,
+  value: Option<V>,
 }
 
-impl<T> Cacher<T>
-  where T: Fn(u32) -> u32
+impl<T, V> Cacher<T, V>
+  where
+    T: Fn() -> V,
+    V: Copy
 {
-  fn new(calculation: T) -> Cacher<T> {
+  fn new(calculation: T) -> Cacher<T, V> {
     Cacher {
       calculation,
       value: None,
     }
   }
 
-  fn value(&mut self, arg: u32) -> u32 {
+  fn value(&mut self) -> V {
     match self.value {
       Some(v) => v,
       None => {
-        let v = (self.calculation)(arg);
+        let v = (self.calculation)();
         self.value = Some(v);
         v
       },
@@ -63,16 +67,16 @@ pub fn run(config: &Config) -> Result<(), Box<dyn Error>> {
 }
 
 fn generate_workout(intensity: u32, variation: u32) {
-  let mut expensive_result = Cacher::new(simulated_expensive_calculation);
+  let mut expensive_result = Cacher::new(|| simulated_expensive_calculation(intensity));
   let low_intensity = intensity < 25;
   if low_intensity {
     println!(
       "Today, do {} pushups!",
-      expensive_result.value(intensity)
+      expensive_result.value()
     );
     println!(
       "Next, do {} situps!",
-      expensive_result.value(intensity)
+      expensive_result.value()
     );
   } else {
     if 3 == variation {
@@ -80,7 +84,7 @@ fn generate_workout(intensity: u32, variation: u32) {
     } else {
       println!(
         "Today, run for {} minutes!",
-        expensive_result.value(intensity)
+        expensive_result.value()
       );
     }
   }
