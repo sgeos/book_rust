@@ -1,0 +1,16 @@
+[package]
+name = "art"
+version = "1.0.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+edition = "2018"
+description = "Sample code for chapter 14.1 and 14.2 in the book The Rust Programming Language."
+license = "BSD-3-Clause-Clear"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+
+[dependencies]
+
