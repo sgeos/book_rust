@@ -1,0 +1,6 @@
+[package]
+name = "add-two"
+version = "0.1.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+
+[dependencies]

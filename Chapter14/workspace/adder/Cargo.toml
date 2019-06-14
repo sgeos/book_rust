@@ -1,0 +1,10 @@
+[package]
+name = "adder"
+version = "0.1.0"
+authors = ["Brendan A R Sechter <b-sechter@unext.jp>"]
+
+[dependencies]
+add-one = { path = "../add-one" }
+add-two = { path = "../add-two" }
+rand = "0.4.6"
+
