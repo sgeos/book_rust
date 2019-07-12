@@ -26,30 +26,36 @@ impl DraftPost {
   pub fn request_review(self) -> PendingReviewPost {
     PendingReviewPost {
       content: self.content,
-      approved: false,
     }
   }
 }
 
 pub struct PendingReviewPost {
   content: String,
-  approved: bool,
 }
 
 impl PendingReviewPost {
-  pub fn approve(mut self) -> (Option<PendingReviewPost>, Option<Post>) {
-    if self.approved {
-      (
-        None,
-        Some(
-          Post {
-            content: self.content,
-          }
-        )
-      )
-    } else {
-      self.approved = true;
-      (Some(self), None)
+  pub fn approve(self) -> PartiallyApprovedPost {
+    PartiallyApprovedPost {
+      content: self.content,
+    }
+  }
+
+  pub fn reject(self) -> DraftPost {
+    DraftPost {
+      content: self.content,
+    }
+  }
+}
+
+pub struct PartiallyApprovedPost {
+  content: String,
+}
+
+impl PartiallyApprovedPost {
+  pub fn approve(self) -> Post {
+    Post {
+      content: self.content,
     }
   }
 
